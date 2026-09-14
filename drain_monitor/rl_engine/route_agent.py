@@ -95,7 +95,7 @@ class RLRouteOptimizer:
 
             # Cost formulation: Time + Exponential Flood Hazard Penalty
             if max_d > 30.0:
-                flood_cost = 9999.0  # Impassable barrier
+                flood_cost = 9999.0 + (max_d * 50.0)  # Impassable barrier, depth-weighted penalty
             elif max_d > 15.0:
                 flood_cost = base_time_min * 5.0 + (max_d * 2.0)
             elif max_d > 5.0:
@@ -131,8 +131,12 @@ class RLRouteOptimizer:
                 f"RL Agent rerouted via {', '.join(rl_path[1:-1])} to avoid {naive_max_depth:.1f} cm "
                 f"water hazard on normal route ({' -> '.join(naive_path)})."
             )
+        elif naive_max_depth > 15.0:
+            reason = (
+                f"Direct route chosen despite {naive_max_depth:.1f} cm water depth as no safer alternative corridor exists."
+            )
         else:
-            reason = "Direct route is clear of severe water hazards (max depth < 10 cm)."
+            reason = f"Direct route is clear of severe water hazards (max depth {naive_max_depth:.1f} cm)."
 
         return {
             "origin": origin,

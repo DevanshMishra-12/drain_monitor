@@ -176,3 +176,5 @@ def serve_dashboard():
         with open(index_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>DrainMonitor API Server Online</h1><p>Dashboard HTML loading...</p>"
+# Mount static files (CSS, JS) from the dashboard directory
+app.mount("/", StaticFiles(directory=dashboard_dir), name="dashboard-static")
